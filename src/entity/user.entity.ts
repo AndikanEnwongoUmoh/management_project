@@ -1,8 +1,8 @@
 import { Column, Entity } from "typeorm";
-import { userRole } from "../role.enum";
+import { userRole } from "../enum/role.enum";
 import { Base } from "./base/base.entity";
 
-@Entity()
+@Entity({name:'users'})
 export class User extends Base{
     @Column()
     username: string;
