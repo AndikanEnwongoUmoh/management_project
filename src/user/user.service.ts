@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(User) private userRepo:Repository<User>) {}
-  async create(payload: CreateUserDto) {
+  async signup(payload: CreateUserDto) {
     payload.email = payload.email.toLowerCase();
     const {email, password, ...rest}=payload
     const user = await this.userRepo.findOne({where:{email}})
@@ -28,21 +28,5 @@ export class UserService {
       }
       return error;
     }    
-  }
-
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }
