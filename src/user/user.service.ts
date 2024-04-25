@@ -1,14 +1,16 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, Req, Res } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from 'src/dto/login.dto';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private userRepo:Repository<User>) {}
+  constructor(@InjectRepository(User) private userRepo:Repository<User>, private readonly jwtService:JwtService) {}
   async signup(payload: CreateUserDto) {
     payload.email = payload.email.toLowerCase();
     const {email, password, ...rest}=payload
@@ -29,4 +31,29 @@ export class UserService {
       return error;
     }    
   }
+
+  async login(payload: LoginDto, @Res()res:Response) {
+    const {email, password} = payload;
+    const user = await this.userRepo.findOne({where:{email}});
+    if(!user){
+      throw new HttpException('Invalid credentials', 400)
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if(!isMatch){
+      throw new HttpException('Invalid credentials', 400)
+    }
+    delete user.password
+    
+    const token = await this.jwtService.signAsync({id: user.id, email: user.email, role: user.role});
+
+    res.cookie('userAuthenticated', token, {httpOnly: true, maxAge: 1 * 60 * 60 * 1000, sameSite:'none', secure:true});
+
+    return res.send({
+      message: 'User logged in successfully', 
+      userToken: token,
+      userDetails: user
+    })
+  }
+
 }

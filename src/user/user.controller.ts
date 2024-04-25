@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { LoginDto } from 'src/dto/login.dto';
+import { Response } from 'express';
 
 @Controller('Users')
 export class UserController {
@@ -10,5 +11,11 @@ export class UserController {
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.signup(createUserDto);
+  }
+
+  @Post('login')
+  async login(@Body() payload, @Res()res:Response) {
+    return await this.userService.login(payload, res);
+    
   }
 }

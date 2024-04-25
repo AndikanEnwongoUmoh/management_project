@@ -2,7 +2,7 @@ import { Column, Entity } from "typeorm";
 import { userRole } from "../enum/role.enum";
 import { Base } from "./base/base.entity";
 
-@Entity({name:'users'})
+@Entity({name:'User', schema: 'public'})
 export class User extends Base{
     @Column()
     username: string;
