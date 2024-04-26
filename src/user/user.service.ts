@@ -83,4 +83,8 @@ export class UserService {
       return user;
     }
   }
+
+  async getAllUser(){
+    return await this.userRepo.find();
+  }
 }
