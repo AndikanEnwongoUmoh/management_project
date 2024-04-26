@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable, Req, Res } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from 'src/dto/login.dto';
 import { Request, Response } from 'express';
+import { catchError } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -55,5 +56,22 @@ export class UserService {
       userDetails: user
     })
   }
+  async user(headers:any): Promise<any>{
+    const authorizationHeader = headers.authorization;
+    if (authorizationHeader){
+      const token = authorizationHeader.replace('Bearer', '');
+      const secret = process.env.JWT_SECRET;
+      try{
+        const decoded = this.jwtService.verify(token);
+        let id = decoded["id"];
+        let user = await this.userRepo.findOneBy({id});
 
+        return {id: id, name: user.username, email: user.email, role: user.role};
+      }catch(error){
+        throw new UnauthorizedException('Invalid token');
+      }
+    }else{
+      throw new UnauthorizedException('Invalid or missing Bearer token');
+    }
+  }
 }
