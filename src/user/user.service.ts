@@ -7,7 +7,6 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from 'src/dto/login.dto';
 import { Request, Response } from 'express';
-import { catchError } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -72,6 +71,16 @@ export class UserService {
       }
     }else{
       throw new UnauthorizedException('Invalid or missing Bearer token');
+    }
+  }
+
+  async findEmail (email:string){
+    const user = await this.userRepo.findOneBy({email: email});
+
+    if(!user){
+      throw new UnauthorizedException()
+    }else{
+      return user;
     }
   }
 }
