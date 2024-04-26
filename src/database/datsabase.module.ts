@@ -17,8 +17,8 @@ import { User } from "src/entity/user.entity";
         password: ConfigService.getOrThrow('DB_PASSWORD'),
         database: ConfigService.getOrThrow('DB_NAME'),
         entities: [User],
-        synchronize: false,
-        migrationsRun: true, 
+        synchronize: true,
+        dropSchema: true
       }),
                 inject: [ConfigService]
             }),
