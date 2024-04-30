@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards, HttpCode } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginDto } from 'src/dto/login.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/guard/role.guard';
 import { userRole } from 'src/enum/role.enum';
@@ -18,8 +18,8 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() payload, @Res()res:Response) {
-    return await this.userService.login(payload, res);
+  async login(@Body() payload,@Req() req:Request, @Res()res:Response) {
+    return await this.userService.login(payload, req, res);
     
   }
 
@@ -28,5 +28,11 @@ export class UserController {
   @Roles(userRole.admin, userRole.manager)
   findAll() {
     return this.userService.getAllUser()
+  }
+
+  @HttpCode(200)
+  @Post('logout')
+  async logout(@Req() req:Request, @Res() res: Response) {
+    return await this.userService.logout(req, res);
   }
 }

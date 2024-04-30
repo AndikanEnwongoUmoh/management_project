@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { User } from "src/entity/user.entity";
+import { Product } from "src/product/entities/product.entity";
 
 @Module({
     imports: [
@@ -16,7 +17,7 @@ import { User } from "src/entity/user.entity";
         username: ConfigService.getOrThrow('DB_USER'),
         password: ConfigService.getOrThrow('DB_PASSWORD'),
         database: ConfigService.getOrThrow('DB_NAME'),
-        entities: [User],
+        entities: [User, Product],
         synchronize: false,
         dropSchema: false,
         migrationsRun:true

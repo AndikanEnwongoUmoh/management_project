@@ -32,7 +32,7 @@ export class UserService {
     }    
   }
 
-  async login(payload: LoginDto, @Res()res:Response) {
+  async login(payload: LoginDto,@Req() req:Request, @Res()res:Response) {
     const {email, password} = payload;
     const user = await this.userRepo.findOne({where:{email}});
     if(!user){
@@ -55,10 +55,17 @@ export class UserService {
       userDetails: user
     })
   }
+
+async logout(@Req() req: Request, @Res() res: Response) {
+  const clearCookie = res.clearCookie('userAuthenticated');
+
+  const response = res.send(`user successfully logged out`)
+}
+
   async user(headers:any): Promise<any>{
     const authorizationHeader = headers.authorization;
     if (authorizationHeader){
-      const token = authorizationHeader.replace('Bearer', '');
+      const token = authorizationHeader.replace('Bearer ', '');
       const secret = process.env.JWT_SECRET;
       try{
         const decoded = this.jwtService.verify(token);
