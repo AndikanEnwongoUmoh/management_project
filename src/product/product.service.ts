@@ -17,26 +17,26 @@ export class ProductService {
     return await this.productRepostory.find();
   }
 
-  async findOne(name:string) {
-    const find = this.productRepostory.findOne({where:{name: name}});
+  async findOne(id: number) {
+    const find = this.productRepostory.findOne({where:{id: id}});
     if(!find)
       throw new error ('id not found')
     return find
   }
 
-  async updateProduct(name:string, payload) {
-    const find = this.productRepostory.findOne({where:{name: name}});
+  async updateProduct(id: number, payload) {
+    const find = this.productRepostory.findOne({where:{id: id}});
     if(!find){
-      throw new error(`product not found`)
+      throw new error(`product with id ${id} not found`)
     }
-    return await this.productRepostory.update(name, payload)
+    return await this.productRepostory.update(id, payload)
   }
 
-  async removePoduct(name: string) {
-    const find = this.productRepostory.findBy({name})
+  async removePoduct(id: number) {
+    const find = this.productRepostory.findBy({id})
     if(!find){
-      throw new error(`product not found`)
+      throw new error(`product with id ${id} not found`)
     }
-    return await this.productRepostory.delete(name)
+    return await this.productRepostory.delete(id)
   }
 }

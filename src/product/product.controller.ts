@@ -17,18 +17,18 @@ export class ProductController {
     return await this.productService.findAll();
   }
 
-  @Get(':name')
-  async findOne(@Param('name') name: string) {
-    return await this.productService.findOne(name);
+  @Get(':id')
+  async findOne(@Param('id') id: number) {
+    return await this.productService.findOne(id);
   }
 
-  @Put(':name')
-  async update(@Param('name') name: string, @Body() updateProductDto: UpdateProductDto) {
-    return await this.productService.updateProduct(name, updateProductDto);
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateProductDto: UpdateProductDto) {
+    return await this.productService.updateProduct(id, updateProductDto);
   }
 
-  @Delete(':name')
-  remove(@Param('name') name: string) {
-    return this.productService.removePoduct(name);
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.productService.removePoduct(id);
   }
 }
