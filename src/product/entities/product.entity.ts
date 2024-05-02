@@ -1,5 +1,6 @@
 import { Base } from "src/entity/base/base.entity";
-import { Column, Entity } from "typeorm";
+import { User } from "src/entity/user.entity";
+import { Column, Entity, ManyToOne } from "typeorm";
 @Entity('name: products')
 export class Product extends Base {
     
@@ -17,4 +18,8 @@ export class Product extends Base {
     
     @Column()
     isEmpty: boolean
+
+
+    @ManyToOne(() => User, (user) => user.product)
+    user: User
 }
